@@ -1,5 +1,9 @@
 import scapy.all as scapy 
 import time
+import pyfiglet
+
+ascii_banner = pyfiglet.figlet_format("ProGod04")
+print(ascii_banner)
 
 def get_mac(ip):
     arp = scapy.ARP(pdst=ip)
