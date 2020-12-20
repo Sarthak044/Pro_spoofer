@@ -1,7 +1,6 @@
 import scapy.all as scapy 
 import time
 
-#target_ip=input("The IP of your target")
 
 def get_mac(ip):
     arp = scapy.ARP(pdst=ip)
